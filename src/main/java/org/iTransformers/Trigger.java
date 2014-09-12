@@ -39,9 +39,8 @@ public class Trigger {
         params.put("address", "193.19.172.133");
         params.put("port", 11123);
 
-        Expect4GroovyScriptLauncher launcher = new Expect4GroovyScriptLauncher();
-
-        CLIConnection conn = createCliConnection(params);
+        CLIConnection conn = createCliConnection((String) params.get("protocol"));
+        conn.connect(params);
         Binding binding = new Binding();
         Expect4Groovy.createBindings(conn, binding, true);
         binding.setProperty("params", params);
@@ -58,7 +57,7 @@ public class Trigger {
 
         Map<String, Object> result = executeScript(cisco_sendConfigCommand.class, binding);
         params.put("configMode", result.get("configMode"));
-        params.put("command","ip route 10.200.1.0 255.255.255.0 192.0.2.1");
+        params.put("command",String.format("ip route %s %s %s", subnet, subnetMask, gateway));
 
         executeScript(cisco_sendConfigCommand.class, binding);
 
@@ -72,17 +71,23 @@ public class Trigger {
         return (Map<String, Object>) script.run();
     }
 
-    private static CLIConnection createCliConnection(Map<String, Object> params) {
+    private static CLIConnection createCliConnection(String protocol) {
         CLIConnection conn;
-        if ("telnet".equals(params.get("protocol"))) {
+        if ("telnet".equals(protocol)) {
             conn = new TelnetCLIConnection();
-        } else if ("raw".equals(params.get("protocol"))) {
+        } else if ("raw".equals(protocol)) {
             conn = new RawSocketCLIConnection();
-        } else if ("echo".equals(params.get("protocol"))) {
+        } else if ("echo".equals(protocol)) {
             conn = new EchoCLIConnection();
         } else {
             conn = new SshCLIConnection();
         }
         return conn;
     }
+
+    public static void main(String[] args) throws Exception {
+        pullTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
+    }
+
+
 }
