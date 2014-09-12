@@ -1,8 +1,22 @@
 package org.iTransformers;
 
-//import groovy.util.ResourceException;
-//import groovy.util.ScriptException;
-//import net.itransformers.expect4groovy.Expect4GroovyScriptLauncher;
+import groovy.lang.Binding;
+import groovy.lang.Script;
+import net.itransformers.expect4groovy.Expect4Groovy;
+import net.itransformers.expect4groovy.Expect4GroovyScriptLauncher;
+import net.itransformers.expect4groovy.cliconnection.CLIConnection;
+import net.itransformers.expect4groovy.cliconnection.impl.EchoCLIConnection;
+import net.itransformers.expect4groovy.cliconnection.impl.RawSocketCLIConnection;
+import net.itransformers.expect4groovy.cliconnection.impl.SshCLIConnection;
+import net.itransformers.expect4groovy.cliconnection.impl.TelnetCLIConnection;
+import org.iTransformers.scripts.cisco_login;
+import org.iTransformers.scripts.cisco_logout;
+import org.iTransformers.scripts.cisco_sendConfigCommand;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,31 +30,59 @@ public class Trigger {
 
 
     public static void pullTrigger(String subnet, String subnetMask,String gateway, String tag) throws Exception {
-//
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("protocol", "telnet");
-//        params.put("username", "lab");
-//        params.put("password", "lab123");
-//        params.put("enable-password", "lab123");
-//        params.put("address", "193.19.172.133");
-//        params.put("port", 11123);
-//
-//        Expect4GroovyScriptLauncher launcher = new Expect4GroovyScriptLauncher();
-//
-//        Map<String, Object> loginResult = launcher.open(new String[]{"." + File.separator}, "cisco_login.groovy", params);
-//
-//
-//        if (loginResult.get("status").equals(2)) {
-//            System.out.println(loginResult);
-//        } else {
-//            Map<String, Object> cmdParams = new LinkedHashMap<String, Object>();
-//            cmdParams.put("evalScript", null);
-//            cmdParams.put("command",String.format("ip route %s %s %s tag %s",subnetMask,gateway,tag));
-//            Map<String, Object> result = launcher.sendCommand("cisco_sendConfigCommand.groovy",cmdParams);
-//            params.put("configMode", result.get("configMode"));
-//            cmdParams.put("command","ip route 10.200.1.0 255.255.255.0 192.0.2.1");
-//            launcher.sendCommand("cisco_sendConfigCommand.groovy", cmdParams);
-//            launcher.close("cisco_logout.groovy");
-//        }
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("protocol", "telnet");
+        params.put("username", "lab");
+        params.put("password", "lab123");
+        params.put("enable-password", "lab123");
+        params.put("address", "193.19.172.133");
+        params.put("port", 11123);
+
+        Expect4GroovyScriptLauncher launcher = new Expect4GroovyScriptLauncher();
+
+        CLIConnection conn = createCliConnection(params);
+        Binding binding = new Binding();
+        Expect4Groovy.createBindings(conn, binding, true);
+        binding.setProperty("params", params);
+
+        Map<String, Object> loginResult = executeScript(cisco_login.class, binding);
+
+        if (loginResult.get("status").equals(2)) {
+            System.out.println(loginResult);
+            return;
+        }
+
+        params.put("evalScript", null);
+        params.put("command",String.format("ip route %s %s %s tag %s",subnet, subnetMask,gateway,tag));
+
+        Map<String, Object> result = executeScript(cisco_sendConfigCommand.class, binding);
+        params.put("configMode", result.get("configMode"));
+        params.put("command","ip route 10.200.1.0 255.255.255.0 192.0.2.1");
+
+        executeScript(cisco_sendConfigCommand.class, binding);
+
+        executeScript(cisco_logout.class, binding);
+
+    }
+
+    private static Map<String, Object> executeScript(Class clazz, Binding binding) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor<Script> scriptConstructor = clazz.getConstructor(Binding.class);
+        Script script = scriptConstructor.newInstance(binding);
+        return (Map<String, Object>) script.run();
+    }
+
+    private static CLIConnection createCliConnection(Map<String, Object> params) {
+        CLIConnection conn;
+        if ("telnet".equals(params.get("protocol"))) {
+            conn = new TelnetCLIConnection();
+        } else if ("raw".equals(params.get("protocol"))) {
+            conn = new RawSocketCLIConnection();
+        } else if ("echo".equals(params.get("protocol"))) {
+            conn = new EchoCLIConnection();
+        } else {
+            conn = new SshCLIConnection();
+        }
+        return conn;
     }
 }

@@ -1,4 +1,4 @@
-package org.iTransofrmers.scripts
+package org.iTransformers.scripts
 /**
  * Created with IntelliJ IDEA.
  * User: niau
