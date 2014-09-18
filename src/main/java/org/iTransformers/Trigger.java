@@ -64,6 +64,42 @@ public class Trigger {
         executeScript(cisco_logout.class, binding);
 
     }
+    public static void pullOffTrigger(String subnet, String subnetMask,String gateway, String tag) throws Exception {
+
+
+        Map<String, Object> params = new HashMap<String, Object>();
+    params.put("protocol", "telnet");
+    params.put("username", "lab");
+    params.put("password", "lab123");
+    params.put("enable-password", "lab123");
+    params.put("address", "193.19.172.133");
+    params.put("port", 11123);
+
+    CLIConnection conn = createCliConnection((String) params.get("protocol"));
+    conn.connect(params);
+    Binding binding = new Binding();
+    Expect4Groovy.createBindings(conn, binding, true);
+    binding.setProperty("params", params);
+
+    Map<String, Object> loginResult = executeScript(cisco_login.class, binding);
+
+    if (loginResult.get("status").equals(2)) {
+        System.out.println(loginResult);
+        return;
+    }
+
+    params.put("evalScript", null);
+    params.put("command",String.format("ip route %s %s %s tag %s",subnet, subnetMask,gateway,tag));
+
+    Map<String, Object> result = executeScript(cisco_sendConfigCommand.class, binding);
+    params.put("configMode", result.get("configMode"));
+    params.put("command",String.format("no ip route %s %s %s", subnet, subnetMask, gateway));
+
+    executeScript(cisco_sendConfigCommand.class, binding);
+
+    executeScript(cisco_logout.class, binding);
+
+}
 
     private static Map<String, Object> executeScript(Class clazz, Binding binding) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<Script> scriptConstructor = clazz.getConstructor(Binding.class);
@@ -87,6 +123,8 @@ public class Trigger {
 
     public static void main(String[] args) throws Exception {
         pullTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
+        pullOffTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
+
     }
 
 

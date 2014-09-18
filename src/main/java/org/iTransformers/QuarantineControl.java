@@ -1,7 +1,7 @@
 package org.iTransformers;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -12,25 +12,27 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 class QuarantineControl {
    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
    Prefixes prefixes;
-   int blockingPeriod;
+    Map<String, Object> params;
 
-
-    QuarantineControl(Prefixes prefixes,int blockingPeriod) {
+    QuarantineControl(Prefixes prefixes,Map<String, Object> params) {
         this.prefixes = prefixes;
-        this.blockingPeriod = blockingPeriod;
+        this.params = params;
     }
+
 
 
     public void beepForAnHour() {
      final Runnable beeper = new Runnable() {
        public void run() {
            System.out.println("beep");
-           if(prefixes.getPrefixes()!=null){
+           if(prefixes.getPrefixes().entrySet()!=null){
                Iterator it = prefixes.getPrefixes().entrySet().iterator();
+
+
                while (it.hasNext()){
-                   System.out.println(it.getClass());
                    long currentTimeMillis = System.currentTimeMillis();
-                   HashMap <String, PrefixCounter> prefix = (HashMap<String, PrefixCounter>) it.next();
+                   System.out.println(it.next().getClass());
+//                   HashMap <String, PrefixCounter> prefix = (HashMap<String, PrefixCounter>) it.next();
 
     //               if(!prefixCounter.checkQuarantineStatus(currentTimeMillis,blockingPeriod )){
     //

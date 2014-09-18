@@ -15,7 +15,9 @@ public class Prefixes {
     public Prefixes(HashMap<String,PrefixCounter> prefixes) {
         this.prefixes = prefixes;
     }
-
+    public int getSize() {
+        return prefixes.size();
+    }
     public Prefixes() {
        prefixes = new HashMap<String,PrefixCounter>();
     }
