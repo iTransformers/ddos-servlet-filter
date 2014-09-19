@@ -28,26 +28,27 @@ public class PrefixCounter2 {
      * Hits this Prefix Counter
      * @return true if this prefix is or has just entered under quarantine
      */
-    public synchronized boolean hit() {
+    public synchronized boolean hit(StateChangedListener enterQuarantineListener) {
         if (isQuarantined) {
-            return hitInQuarantineState();
+            return hitInQuarantineState(enterQuarantineListener);
         } else {
-            return hitInNormalState();
+            return hitInNormalState(enterQuarantineListener);
         }
     }
 
-    private boolean hitInQuarantineState(){
+    private boolean hitInQuarantineState(StateChangedListener enterQuarantineListener){
         long now = System.currentTimeMillis();
         long last = timeticks.getLast();
         if (now - last > maxQuarantinePeriod) { //exit quarantine
             isQuarantined = false;
+            enterQuarantineListener.stateChanged(isQuarantined);
         }
         timeticks.clear();
         timeticks.add(now);
         return isQuarantined;
     }
 
-    private boolean hitInNormalState(){
+    private boolean hitInNormalState(StateChangedListener enterQuarantineListener){
         long now = System.currentTimeMillis();
         updateTimeticks(now);
         int hitCounts = timeticks.size();
@@ -55,6 +56,7 @@ public class PrefixCounter2 {
             timeticks.clear();
             timeticks.add(now);
             isQuarantined  = true;
+            enterQuarantineListener.stateChanged(isQuarantined);
         }
         return isQuarantined;
     }
