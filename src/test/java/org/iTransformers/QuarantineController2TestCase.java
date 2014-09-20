@@ -21,7 +21,7 @@ public class QuarantineController2TestCase {
         prefixes.put("123", prefixCounter);
         prefixes.put("1234", prefixCounter2);
 
-        QuarantineController2 quarantineController = new QuarantineController2(prefixes, 1000);
+        QuarantineController2 quarantineController = new QuarantineController2(prefixes, 1000, null);
         quarantineController.start();
         boolean isInQuarantine = false;
         boolean isInQuarantine2 = false;
@@ -52,7 +52,7 @@ public class QuarantineController2TestCase {
         prefixes.put("123", prefixCounter);
         prefixes.put("1234", prefixCounter2);
 
-        QuarantineController2 quarantineController = new QuarantineController2(prefixes, 1000);
+        QuarantineController2 quarantineController = new QuarantineController2(prefixes, 1000, null);
         quarantineController.start();
         boolean isInQuarantine = false;
         boolean isInQuarantine2 = false;

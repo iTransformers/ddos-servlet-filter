@@ -25,27 +25,27 @@ public final class HitCounterFilter2 implements Filter {
         System.out.println("\nPrefixHitCount: " + filterConfig.getInitParameter("PrefixHitCount"));
         int blockingPeriod = Integer.parseInt(filterConfig.getInitParameter("BlockingPeriod"));
 
-//        String triggerIPAddress = filterConfig.getInitParameter("TriggerIPAddress");
-//        String triggerProtocol = filterConfig.getInitParameter("TriggerProtocol");
-//        String userName = filterConfig.getInitParameter("UserName");
-//        String userPass = filterConfig.getInitParameter("UserPass");
-//        String enablePass = filterConfig.getInitParameter("EnablePass");
-//        String triggerPort = filterConfig.getInitParameter("TriggerPort");
-//
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("protocol", triggerProtocol);
-//        params.put("username", userName);
-//        params.put("password", userPass);
-//        params.put("enable-password", enablePass);
-//        params.put("address", triggerIPAddress);
-//        params.put("port", triggerPort);
-//        params.put("blockingPeriod",blockingPeriod);
-        //Initialize prefixCounter
+        String triggerIPAddress = filterConfig.getInitParameter("TriggerIPAddress");
+        String triggerProtocol = filterConfig.getInitParameter("TriggerProtocol");
+        String userName = filterConfig.getInitParameter("UserName");
+        String userPass = filterConfig.getInitParameter("UserPass");
+        String enablePass = filterConfig.getInitParameter("EnablePass");
+        String triggerPort = filterConfig.getInitParameter("TriggerPort");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("protocol", triggerProtocol);
+        params.put("username", userName);
+        params.put("password", userPass);
+        params.put("enable-password", enablePass);
+        params.put("address", triggerIPAddress);
+        params.put("port", triggerPort);
+        params.put("blockingPeriod",blockingPeriod);
+//        Initialize prefixCounter
         HashMap<String, PrefixCounter2> prefixes = new HashMap<String, PrefixCounter2>();
 
         filterConfig.getServletContext().setAttribute("prefixCounter", prefixes);
 //        QuarantineControl beeperControl = new QuarantineControl(prefixes,params);
-        quarantineController = new QuarantineController2(prefixes, blockingPeriod);
+        quarantineController = new QuarantineController2(prefixes, blockingPeriod, params);
         quarantineController.start();
     }
 
