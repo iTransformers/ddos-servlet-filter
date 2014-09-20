@@ -12,6 +12,7 @@ import java.util.Map;
 
 public final class HitCounterFilter2 implements Filter {
     private FilterConfig filterConfig = null;
+    private QuarantineController2 quarantineController;
 
     public void init(FilterConfig filterConfig)
             throws ServletException {
@@ -22,7 +23,7 @@ public final class HitCounterFilter2 implements Filter {
 
         System.out.println("\nTriggerPrefixLength: " + filterConfig.getInitParameter("TriggerPrefixLength"));
         System.out.println("\nPrefixHitCount: " + filterConfig.getInitParameter("PrefixHitCount"));
-//        int blockingPeriod = Integer.parseInt(filterConfig.getInitParameter("BlockingPeriod"));
+        int blockingPeriod = Integer.parseInt(filterConfig.getInitParameter("BlockingPeriod"));
 
 //        String triggerIPAddress = filterConfig.getInitParameter("TriggerIPAddress");
 //        String triggerProtocol = filterConfig.getInitParameter("TriggerProtocol");
@@ -44,9 +45,12 @@ public final class HitCounterFilter2 implements Filter {
 
         filterConfig.getServletContext().setAttribute("prefixCounter", prefixes);
 //        QuarantineControl beeperControl = new QuarantineControl(prefixes,params);
+        quarantineController = new QuarantineController2(prefixes, blockingPeriod);
+        quarantineController.start();
     }
 
     public void destroy() {
+        quarantineController.stop();
         this.filterConfig = null;
     }
 

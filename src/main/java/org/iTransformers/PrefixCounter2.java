@@ -28,6 +28,10 @@ public class PrefixCounter2 {
      * Hits this Prefix Counter
      * @return true if this prefix is or has just entered under quarantine
      */
+    public synchronized boolean hit() {
+        return hit(null);
+    }
+
     public synchronized boolean hit(StateChangedListener enterQuarantineListener) {
         if (isQuarantined) {
             return hitInQuarantineState(enterQuarantineListener);
@@ -36,13 +40,25 @@ public class PrefixCounter2 {
         }
     }
 
+    public synchronized  boolean heartbeat(){
+        return heartbeat(null);
+    }
+
+    public synchronized  boolean heartbeat(StateChangedListener enterQuarantineListener){
+        if (isQuarantined) {
+            long now = System.currentTimeMillis();
+            refreshQuarantine(enterQuarantineListener, now);
+            if (!isQuarantined){
+                timeticks.clear();
+                timeticks.add(now);
+            }
+        }
+        return isQuarantined;
+    }
+
     private boolean hitInQuarantineState(StateChangedListener enterQuarantineListener){
         long now = System.currentTimeMillis();
-        long last = timeticks.getLast();
-        if (now - last > maxQuarantinePeriod) { //exit quarantine
-            isQuarantined = false;
-            enterQuarantineListener.stateChanged(isQuarantined);
-        }
+        refreshQuarantine(enterQuarantineListener, now);
         timeticks.clear();
         timeticks.add(now);
         return isQuarantined;
@@ -56,7 +72,9 @@ public class PrefixCounter2 {
             timeticks.clear();
             timeticks.add(now);
             isQuarantined  = true;
-            enterQuarantineListener.stateChanged(isQuarantined);
+            if (enterQuarantineListener != null) {
+                enterQuarantineListener.stateChanged(isQuarantined);
+            }
         }
         return isQuarantined;
     }
@@ -71,5 +89,15 @@ public class PrefixCounter2 {
             }
         }
         timeticks.add(millis);
+    }
+
+    private void refreshQuarantine(StateChangedListener enterQuarantineListener, long now) {
+        long last = timeticks.getLast();
+        if (now - last > maxQuarantinePeriod) { //exit quarantine
+            isQuarantined = false;
+            if (enterQuarantineListener != null) {
+                enterQuarantineListener.stateChanged(isQuarantined);
+            }
+        }
     }
 }
