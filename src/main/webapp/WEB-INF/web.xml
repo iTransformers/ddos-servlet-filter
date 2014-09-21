@@ -23,6 +23,26 @@
           <param-name>DeltaPeriod</param-name>
           <param-value>10000</param-value>
       </init-param>
+      <init-param>
+          <param-name>TriggerIPAddress</param-name>
+          <param-value>192.168.3.3</param-value>
+      </init-param>
+      <init-param>
+          <param-name>TriggerProtocol</param-name>
+          <param-value>telnet</param-value>
+      </init-param>
+      <init-param>
+          <param-name>UserName</param-name>
+          <param-value>lab</param-value>
+      </init-param>
+      <init-param>
+          <param-name>Pass</param-name>
+          <param-value>lab123</param-value>
+      </init-param>
+      <init-param>
+          <param-name>TriggerPort</param-name>
+          <param-value>11123</param-value>
+      </init-param>
   </filter>
     <filter-mapping>
         <filter-name>HitCounterFilter</filter-name>
