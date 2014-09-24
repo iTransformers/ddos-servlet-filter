@@ -29,15 +29,15 @@ public class Trigger {
 
 
 
-    public static void pullTrigger(String subnet, String subnetMask,String gateway, String tag) throws Exception {
+    public static void pullTrigger(String subnet, String subnetMask,String gateway, String tag,Map<String, Object> params) throws Exception {
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("protocol", "telnet");
-        params.put("username", "lab");
-        params.put("password", "lab123");
-        params.put("enable-password", "lab123");
-        params.put("address", "193.19.172.133");
-        params.put("port", 11123);
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("protocol", "telnet");
+//        params.put("username", "lab");
+//        params.put("password", "lab123");
+//        params.put("enable-password", "lab123");
+//        params.put("address", "193.19.172.133");
+//        params.put("port", 2);
 
         CLIConnection conn = createCliConnection((String) params.get("protocol"));
         conn.connect(params);
@@ -64,16 +64,16 @@ public class Trigger {
         executeScript(cisco_logout.class, binding);
 
     }
-    public static void pullOffTrigger(String subnet, String subnetMask,String gateway, String tag) throws Exception {
+    public static void pullOffTrigger(String subnet, String subnetMask,String gateway, String tag, Map<String, Object> params) throws Exception {
 
 
-        Map<String, Object> params = new HashMap<String, Object>();
-    params.put("protocol", "telnet");
-    params.put("username", "lab");
-    params.put("password", "lab123");
-    params.put("enable-password", "lab123");
-    params.put("address", "193.19.172.133");
-    params.put("port", 11123);
+//        Map<String, Object> params = new HashMap<String, Object>();
+//    params.put("protocol", "telnet");
+//    params.put("username", "lab");
+//    params.put("password", "lab123");
+//    params.put("enable-password", "lab123");
+//    params.put("address", "193.19.172.133");
+//    params.put("port", 11123);
 
     CLIConnection conn = createCliConnection((String) params.get("protocol"));
     conn.connect(params);
@@ -121,11 +121,11 @@ public class Trigger {
         return conn;
     }
 
-    public static void main(String[] args) throws Exception {
-        pullTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
-        pullOffTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
-
-    }
+//    public static void main(String[] args) throws Exception {
+//        pullTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
+//        pullOffTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
+//
+//    }
 
 
 }

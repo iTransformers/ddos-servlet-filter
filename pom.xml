@@ -35,26 +35,26 @@
   <build>
     <finalName>ServLetDDOSExample</finalName>
     <plugins>
-        <plugin>
-            <groupId>org.apache.tomcat.maven</groupId>
-            <artifactId>tomcat7-maven-plugin</artifactId>
-            <version>2.2</version>
-            <configuration>
-                <url>http://localhost:8080/manager/text</url>
-                <server>deploymentRepo</server>
-                <path>/ServLetDDOSExample</path>
-            </configuration>
-        </plugin>
         <!--<plugin>-->
             <!--<groupId>org.apache.tomcat.maven</groupId>-->
             <!--<artifactId>tomcat7-maven-plugin</artifactId>-->
             <!--<version>2.2</version>-->
             <!--<configuration>-->
-                <!--<url>http://10.18.1.151:8080/manager/text</url>-->
-                <!--<server>productionRepo</server>-->
+                <!--<url>http://localhost:8080/manager/text</url>-->
+                <!--<server>deploymentRepo</server>-->
                 <!--<path>/ServLetDDOSExample</path>-->
             <!--</configuration>-->
         <!--</plugin>-->
+        <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.2</version>
+            <configuration>
+                <url>http://10.18.1.151:8080/manager/text</url>
+                <server>productionRepo</server>
+                <path>/ServLetDDOSExample</path>
+            </configuration>
+        </plugin>
         <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
             <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->

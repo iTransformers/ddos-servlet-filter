@@ -5,8 +5,8 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   <filter>
-      <filter-name>HitCounterFilter</filter-name>
-      <filter-class>org.iTransformers.HitCounterFilter</filter-class>
+      <filter-name>HitCounterFilter2</filter-name>
+      <filter-class>org.iTransformers.HitCounterFilter2</filter-class>
       <init-param>
           <param-name>TriggerPrefixLength</param-name>
           <param-value>24</param-value>
@@ -17,7 +17,7 @@
       </init-param>
       <init-param>
           <param-name>BlockingPeriod</param-name>
-          <param-value>1000000</param-value>
+          <param-value>1000</param-value>
       </init-param>
       <init-param>
           <param-name>DeltaPeriod</param-name>
@@ -29,23 +29,31 @@
       </init-param>
       <init-param>
           <param-name>TriggerProtocol</param-name>
-          <param-value>telnet</param-value>
+          <param-value>ssh</param-value>
       </init-param>
       <init-param>
           <param-name>UserName</param-name>
           <param-value>lab</param-value>
       </init-param>
       <init-param>
-          <param-name>Pass</param-name>
+          <param-name>UserPass</param-name>
+          <param-value>lab123</param-value>
+      </init-param>
+      <init-param>
+          <param-name>EnablePass</param-name>
           <param-value>lab123</param-value>
       </init-param>
       <init-param>
           <param-name>TriggerPort</param-name>
-          <param-value>11123</param-value>
+          <param-value>22</param-value>
+      </init-param>
+      <init-param>
+          <param-name>sshTimeout</param-name>
+          <param-value>10000</param-value>
       </init-param>
   </filter>
     <filter-mapping>
-        <filter-name>HitCounterFilter</filter-name>
+        <filter-name>HitCounterFilter2</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
   <servlet>

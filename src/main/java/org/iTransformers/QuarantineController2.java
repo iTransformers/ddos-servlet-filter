@@ -1,13 +1,8 @@
 package org.iTransformers;
 
+import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class QuarantineController2 implements Runnable{
@@ -29,12 +24,29 @@ public class QuarantineController2 implements Runnable{
     @Override
     public synchronized void run() {
         while (running){
-            for (PrefixCounter2 prefixCounter2 : prefixes.values()) {
-                prefixCounter2.heartbeat(new StateChangedListener() {
+            for (final String prefix : prefixes.keySet()) {
+                PrefixCounter2 prefixCounter =prefixes.get(prefix);
+                prefixCounter.heartbeat(new StateChangedListener() {
                     @Override
                     public void stateChanged(boolean isQuarantine) {
                         if (isQuarantine) {
-                            // TODO call Router use params
+                            System.out.println("Prefix "+ prefix +" quarantine has finished. So let's pull off the trigger!!!");
+                            try {
+                                CIDRUtils utils = new CIDRUtils(prefix);
+
+
+                            Trigger.pullTrigger(utils.getNetworkAddress(),utils.getIPv4LocalNetMask().getHostAddress(),"Null0","666",params);
+                                // TODO handle exceptions in a better way!!!
+
+                            } catch (UnknownHostException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            } catch (Exception e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
+
+                        }   else{
+                            System.out.println("Prefix "+prefix+ " is still in quarantine!!!");
+
                         }
                     }
                 });

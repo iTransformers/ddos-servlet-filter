@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public final class HitCounterFilter2 implements Filter {
@@ -19,10 +18,6 @@ public final class HitCounterFilter2 implements Filter {
         this.filterConfig = filterConfig;
         System.out.println("\nFilter Initialization!!!");
 
-        //Dump filter initialization parameters!!!
-
-        System.out.println("\nTriggerPrefixLength: " + filterConfig.getInitParameter("TriggerPrefixLength"));
-        System.out.println("\nPrefixHitCount: " + filterConfig.getInitParameter("PrefixHitCount"));
         int blockingPeriod = Integer.parseInt(filterConfig.getInitParameter("BlockingPeriod"));
 
         String triggerIPAddress = filterConfig.getInitParameter("TriggerIPAddress");
@@ -30,7 +25,7 @@ public final class HitCounterFilter2 implements Filter {
         String userName = filterConfig.getInitParameter("UserName");
         String userPass = filterConfig.getInitParameter("UserPass");
         String enablePass = filterConfig.getInitParameter("EnablePass");
-        String triggerPort = filterConfig.getInitParameter("TriggerPort");
+        int triggerPort = Integer.parseInt(filterConfig.getInitParameter("TriggerPort"));
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("protocol", triggerProtocol);
@@ -39,12 +34,13 @@ public final class HitCounterFilter2 implements Filter {
         params.put("enable-password", enablePass);
         params.put("address", triggerIPAddress);
         params.put("port", triggerPort);
-        params.put("blockingPeriod",blockingPeriod);
+        //params.put("blockingPeriod",blockingPeriod);
 //        Initialize prefixCounter
         HashMap<String, PrefixCounter2> prefixes = new HashMap<String, PrefixCounter2>();
 
         filterConfig.getServletContext().setAttribute("prefixCounter", prefixes);
-//        QuarantineControl beeperControl = new QuarantineControl(prefixes,params);
+      //  filterConfig.getServletContext().setAttribute("params, params);
+
         quarantineController = new QuarantineController2(prefixes, blockingPeriod, params);
         quarantineController.start();
     }
@@ -92,14 +88,32 @@ public final class HitCounterFilter2 implements Filter {
         boolean isQuarantined = prefixCounter.hit(new StateChangedListener() {
             @Override
             public void stateChanged(boolean isQuarantine) {
+                String triggerIPAddress = filterConfig.getInitParameter("TriggerIPAddress");
+                String triggerProtocol = filterConfig.getInitParameter("TriggerProtocol");
+                String userName = filterConfig.getInitParameter("UserName");
+                String userPass = filterConfig.getInitParameter("UserPass");
+                String enablePass = filterConfig.getInitParameter("EnablePass");
+                int triggerPort = Integer.parseInt(filterConfig.getInitParameter("TriggerPort"));
+                int sshTimeout = Integer.parseInt(filterConfig.getInitParameter("sshTimeout"));
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put("protocol", triggerProtocol);
+                params.put("username", userName);
+                params.put("password", userPass);
+                params.put("enable-password", enablePass);
+                params.put("address", triggerIPAddress);
+                params.put("port", triggerPort);
+                params.put("timeout", sshTimeout);
                 try {
-                    Trigger.pullTrigger(networkAddress,subnetMask,"Null0","666");
+                    System.out.println("Pulling the trigger for "+networkAddress+" with mask "+subnetMask);
+                    Trigger.pullTrigger(networkAddress,subnetMask,"Null0","666",params);
                 } catch (Exception e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
         });
         if (isQuarantined) {
+                System.out.println("This should never happen. E.g we should never come here!");
                 HttpServletResponse httpResponse = (HttpServletResponse) response;
                 httpResponse.sendRedirect("http://cert.org");
         }
