@@ -2,11 +2,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>iTransformers</groupId>
-  <artifactId>ServLetDDOSExample</artifactId>
+  <artifactId>DDOSServletFilter</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>ServLetDDOSExample Maven Webapp</name>
-  <url>http://github.com/iTransformers/DDOSServletFIlter</url>
+  <name>ServLetDDOSExample</name>
+  <url>http://github.com/iTransformers/DDOSServletFilter</url>
   <dependencies>
 
       <dependency>
