@@ -12,7 +12,6 @@ import java.util.*;
 public class PrefixCounter {
     private LinkedList<Long> timeticks;
     private boolean isQuarantined;
-    private boolean isPulled;
     private long hitHistoryPeriod;
     private long quarantineHitThreshold;
     private long maxQuarantinePeriod;
@@ -73,9 +72,7 @@ public class PrefixCounter {
             timeticks.clear();
             timeticks.add(now);
             isQuarantined  = true;
-            if (enterQuarantineListener != null) {
-                enterQuarantineListener.stateChanged(isQuarantined);
-            }
+            fireStateChangedEvent(enterQuarantineListener);
         }
         return isQuarantined;
     }
@@ -96,17 +93,23 @@ public class PrefixCounter {
         long last = timeticks.getLast();
         if (now - last > maxQuarantinePeriod) { //exit quarantine
             isQuarantined = false;
-            if (enterQuarantineListener != null) {
-                enterQuarantineListener.stateChanged(isQuarantined);
-            }
+            fireStateChangedEvent(enterQuarantineListener);
         }
     }
 
-    public boolean isPulled() {
-        return isPulled;
-    }
-
-    public void setPulled(boolean pulled) {
-        isPulled = pulled;
+    /**
+     * Fires state changed event in new thread
+     * @param enterQuarantineListener the listener to which the event will be fired
+     */
+    private void fireStateChangedEvent(final StateChangedListener enterQuarantineListener){
+        final boolean isQuarantined = this.isQuarantined;
+        if (enterQuarantineListener != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    enterQuarantineListener.stateChanged(isQuarantined);
+                }
+            }).start();
+        }
     }
 }

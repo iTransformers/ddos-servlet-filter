@@ -18,10 +18,10 @@ public class QuarantineControllerTestCase {
         PrefixCounter prefixCounter2 = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
 
         HashMap<String, PrefixCounter> prefixes = new HashMap<String, PrefixCounter>();
-        prefixes.put("123", prefixCounter);
-        prefixes.put("1234", prefixCounter2);
+        prefixes.put("192.168.1.1/24", prefixCounter);
+        prefixes.put("192.168.2.1/24", prefixCounter2);
 
-        QuarantineController quarantineController = new QuarantineController(prefixes, 1000, null);
+        QuarantineController quarantineController = new QuarantineController(prefixes, 1000, null, null);
         quarantineController.start();
         boolean isInQuarantine = false;
         boolean isInQuarantine2 = false;
@@ -49,10 +49,10 @@ public class QuarantineControllerTestCase {
         PrefixCounter prefixCounter2 = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
 
         HashMap<String, PrefixCounter> prefixes = new HashMap<String, PrefixCounter>();
-        prefixes.put("123", prefixCounter);
-        prefixes.put("1234", prefixCounter2);
+        prefixes.put("192.168.1.1/24", prefixCounter);
+        prefixes.put("192.168.2.1/24", prefixCounter2);
 
-        QuarantineController quarantineController = new QuarantineController(prefixes, 1000, null);
+        QuarantineController quarantineController = new QuarantineController(prefixes, 1000, null, null);
         quarantineController.start();
         boolean isInQuarantine = false;
         boolean isInQuarantine2 = false;
