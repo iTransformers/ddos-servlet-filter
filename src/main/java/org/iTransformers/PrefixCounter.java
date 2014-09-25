@@ -9,14 +9,15 @@ import java.util.*;
  * Time: 11:52 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PrefixCounter2 {
+public class PrefixCounter {
     private LinkedList<Long> timeticks;
     private boolean isQuarantined;
+    private boolean isPulled;
     private long hitHistoryPeriod;
     private long quarantineHitThreshold;
     private long maxQuarantinePeriod;
 
-    public PrefixCounter2(long hitHistoryPeriod, long quarantineHitThreshold, long maxQuarantinePeriod) {
+    public PrefixCounter(long hitHistoryPeriod, long quarantineHitThreshold, long maxQuarantinePeriod) {
         this.hitHistoryPeriod = hitHistoryPeriod;
         this.quarantineHitThreshold = quarantineHitThreshold;
         this.maxQuarantinePeriod = maxQuarantinePeriod;
@@ -99,5 +100,13 @@ public class PrefixCounter2 {
                 enterQuarantineListener.stateChanged(isQuarantined);
             }
         }
+    }
+
+    public boolean isPulled() {
+        return isPulled;
+    }
+
+    public void setPulled(boolean pulled) {
+        isPulled = pulled;
     }
 }

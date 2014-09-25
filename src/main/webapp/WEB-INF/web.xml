@@ -6,7 +6,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <filter>
       <filter-name>HitCounterFilter2</filter-name>
-      <filter-class>org.iTransformers.HitCounterFilter2</filter-class>
+      <filter-class>org.iTransformers.HitCounterFilter</filter-class>
       <init-param>
           <param-name>TriggerPrefixLength</param-name>
           <param-value>24</param-value>
@@ -17,7 +17,7 @@
       </init-param>
       <init-param>
           <param-name>BlockingPeriod</param-name>
-          <param-value>1000</param-value>
+          <param-value>120000</param-value>
       </init-param>
       <init-param>
           <param-name>DeltaPeriod</param-name>

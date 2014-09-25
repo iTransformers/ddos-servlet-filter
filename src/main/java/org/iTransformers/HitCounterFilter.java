@@ -9,9 +9,9 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class HitCounterFilter2 implements Filter {
+public final class HitCounterFilter implements Filter {
     private FilterConfig filterConfig = null;
-    private QuarantineController2 quarantineController;
+    private QuarantineController quarantineController;
 
     public void init(FilterConfig filterConfig)
             throws ServletException {
@@ -26,6 +26,7 @@ public final class HitCounterFilter2 implements Filter {
         String userPass = filterConfig.getInitParameter("UserPass");
         String enablePass = filterConfig.getInitParameter("EnablePass");
         int triggerPort = Integer.parseInt(filterConfig.getInitParameter("TriggerPort"));
+        int sshTimeout = Integer.parseInt(filterConfig.getInitParameter("sshTimeout"));
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("protocol", triggerProtocol);
@@ -34,14 +35,16 @@ public final class HitCounterFilter2 implements Filter {
         params.put("enable-password", enablePass);
         params.put("address", triggerIPAddress);
         params.put("port", triggerPort);
+        params.put("timeout", sshTimeout);
+
         //params.put("blockingPeriod",blockingPeriod);
 //        Initialize prefixCounter
-        HashMap<String, PrefixCounter2> prefixes = new HashMap<String, PrefixCounter2>();
+        HashMap<String, PrefixCounter> prefixes = new HashMap<String, PrefixCounter>();
 
         filterConfig.getServletContext().setAttribute("prefixCounter", prefixes);
       //  filterConfig.getServletContext().setAttribute("params, params);
 
-        quarantineController = new QuarantineController2(prefixes, blockingPeriod, params);
+        quarantineController = new QuarantineController(prefixes, blockingPeriod, params);
         quarantineController.start();
     }
 
@@ -70,7 +73,7 @@ public final class HitCounterFilter2 implements Filter {
         long deltaPeriod = Integer.parseInt(filterConfig.getInitParameter("DeltaPeriod"));
 
 
-        HashMap<String, PrefixCounter2> prefixes = (HashMap<String, PrefixCounter2>) filterConfig.getServletContext().getAttribute("prefixCounter");
+        HashMap<String, PrefixCounter> prefixes = (HashMap<String, PrefixCounter>) filterConfig.getServletContext().getAttribute("prefixCounter");
 
         CIDRUtils utils = new CIDRUtils(remoteAddr + "/" + triggerPrefixLength);
 
@@ -81,13 +84,21 @@ public final class HitCounterFilter2 implements Filter {
         String prefix = remoteAddr + "/" + triggerPrefixLength;
 
         if (!prefixes.containsKey(prefix) ){
-             prefixes.put(prefix, new PrefixCounter2(deltaPeriod, prefixHitCount, blockingPeriod));
+             prefixes.put(prefix, new PrefixCounter(deltaPeriod, prefixHitCount, blockingPeriod));
         }
 
-        PrefixCounter2 prefixCounter = prefixes.get(prefix);
-        boolean isQuarantined = prefixCounter.hit(new StateChangedListener() {
+            final PrefixCounter prefixCounter = prefixes.get(prefix);
+        if (prefixCounter.isPulled()) {
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+            httpResponse.reset();
+        }
+        //Prefix counter will pull the trigger if the trigger for that prefix is not already pulled!
+        //If trigger is pulled but we still get a request we will reset it and will just encounter one more hit.
+        //This will change the time in which the prefix will exit from quarantine!
+        prefixCounter.hit(new StateChangedListener() {
             @Override
             public void stateChanged(boolean isQuarantine) {
+
                 String triggerIPAddress = filterConfig.getInitParameter("TriggerIPAddress");
                 String triggerProtocol = filterConfig.getInitParameter("TriggerProtocol");
                 String userName = filterConfig.getInitParameter("UserName");
@@ -96,7 +107,7 @@ public final class HitCounterFilter2 implements Filter {
                 int triggerPort = Integer.parseInt(filterConfig.getInitParameter("TriggerPort"));
                 int sshTimeout = Integer.parseInt(filterConfig.getInitParameter("sshTimeout"));
 
-                Map<String, Object> params = new HashMap<String, Object>();
+                final Map<String, Object> params = new HashMap<String, Object>();
                 params.put("protocol", triggerProtocol);
                 params.put("username", userName);
                 params.put("password", userPass);
@@ -104,19 +115,22 @@ public final class HitCounterFilter2 implements Filter {
                 params.put("address", triggerIPAddress);
                 params.put("port", triggerPort);
                 params.put("timeout", sshTimeout);
-                try {
+
                     System.out.println("Pulling the trigger for "+networkAddress+" with mask "+subnetMask);
-                    Trigger.pullTrigger(networkAddress,subnetMask,"Null0","666",params);
-                } catch (Exception e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Trigger.pullTrigger(networkAddress,subnetMask,"Null0","666",params);
+                            } catch (Exception e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
+                            prefixCounter.setPulled(true);
+                        }
+                    }).start();
             }
+
         });
-        if (isQuarantined) {
-                System.out.println("This should never happen. E.g we should never come here!");
-                HttpServletResponse httpResponse = (HttpServletResponse) response;
-                httpResponse.sendRedirect("http://cert.org");
-        }
 
         writer.println(prefix + "->" + prefixes.get(prefix));
         writer.flush();

@@ -4,13 +4,13 @@ package org.iTransformers;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class PrefixCounter2TestCase {
+public class PrefixCounterTestCase {
     @Test
     public void testCheckEnterInQuarantine(){
         long hitHistoryPeriod = 1000;
         final long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
         // We hit too fast so that the quarantineHitThreshold is exceeded in less then hitHistoryPeriod milliseconds
         for (int i=1; i <= quarantineHitThreshold; i++) {
             final int j = i;
@@ -37,7 +37,7 @@ public class PrefixCounter2TestCase {
         long hitHistoryPeriod = 1000;
         long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
         // lets do one hit less then quarantineHitThreshold so that we do not enter in quarantine
         for (int i=1; i <= quarantineHitThreshold-1; i++) {
             boolean isInQuarantine = prefixCounter.hit(new StateChangedListener() {
@@ -55,7 +55,7 @@ public class PrefixCounter2TestCase {
         long hitHistoryPeriod = 1000;
         final long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
         // Lets wait put some delay, greater than hitHistoryPeriod, on the last hit
         for (int i=1; i <= quarantineHitThreshold; i++) {
             if (i == quarantineHitThreshold - 1) {
@@ -76,7 +76,7 @@ public class PrefixCounter2TestCase {
         long hitHistoryPeriod = 1000;
         final long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
         // Lets do last hit after delay of maxQuarantinePeriod so that we will exit from quarantine after that hit
         boolean isInQuarantine = false;
         for (int i=1; i <= quarantineHitThreshold; i++) {
@@ -93,7 +93,7 @@ public class PrefixCounter2TestCase {
         long hitHistoryPeriod = 1000;
         final long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
         // Let do last hit before the quarantine period is over
         boolean isInQuarantine = false;
         for (int i=1; i <= quarantineHitThreshold; i++) {
@@ -115,7 +115,7 @@ public class PrefixCounter2TestCase {
         long hitHistoryPeriod = 1000;
         long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
         // Let enter in quarantine
         boolean isInQuarantine = false;
         for (int i=1; i <= quarantineHitThreshold; i++) {
@@ -141,8 +141,8 @@ public class PrefixCounter2TestCase {
         long hitHistoryPeriod = 1000;
         long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
-        // Let enter in quarantine
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        // Lets enter in quarantine
         boolean isInQuarantine = false;
         for (int i=1; i <= quarantineHitThreshold; i++) {
             isInQuarantine = prefixCounter.hit();

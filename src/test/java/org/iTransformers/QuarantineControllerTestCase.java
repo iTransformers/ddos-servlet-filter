@@ -8,20 +8,20 @@ import java.util.HashMap;
 /**
  * Created by vasko on 9/20/14.
  */
-public class QuarantineController2TestCase {
+public class QuarantineControllerTestCase {
     @Test
     public void testQuarantineControl() throws InterruptedException {
         long hitHistoryPeriod = 1000;
         final long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
-        PrefixCounter2 prefixCounter2 = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter2 = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
 
-        HashMap<String, PrefixCounter2> prefixes = new HashMap<String, PrefixCounter2>();
+        HashMap<String, PrefixCounter> prefixes = new HashMap<String, PrefixCounter>();
         prefixes.put("123", prefixCounter);
         prefixes.put("1234", prefixCounter2);
 
-        QuarantineController2 quarantineController = new QuarantineController2(prefixes, 1000, null);
+        QuarantineController quarantineController = new QuarantineController(prefixes, 1000, null);
         quarantineController.start();
         boolean isInQuarantine = false;
         boolean isInQuarantine2 = false;
@@ -45,14 +45,14 @@ public class QuarantineController2TestCase {
         long hitHistoryPeriod = 1000;
         final long quarantineHitThreshold = 20;
         long maxQuarantinePeriod = 2000;
-        PrefixCounter2 prefixCounter = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
-        PrefixCounter2 prefixCounter2 = new PrefixCounter2(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
+        PrefixCounter prefixCounter2 = new PrefixCounter(hitHistoryPeriod, quarantineHitThreshold, maxQuarantinePeriod);
 
-        HashMap<String, PrefixCounter2> prefixes = new HashMap<String, PrefixCounter2>();
+        HashMap<String, PrefixCounter> prefixes = new HashMap<String, PrefixCounter>();
         prefixes.put("123", prefixCounter);
         prefixes.put("1234", prefixCounter2);
 
-        QuarantineController2 quarantineController = new QuarantineController2(prefixes, 1000, null);
+        QuarantineController quarantineController = new QuarantineController(prefixes, 1000, null);
         quarantineController.start();
         boolean isInQuarantine = false;
         boolean isInQuarantine2 = false;

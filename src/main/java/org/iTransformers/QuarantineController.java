@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class QuarantineController2 implements Runnable{
+public class QuarantineController implements Runnable{
 
-    private HashMap<String, PrefixCounter2> prefixes;
+    private HashMap<String, PrefixCounter> prefixes;
     private long quarantineCheckTime;
     private Map<String, Object> params;
     private boolean running = true;
 
-    public QuarantineController2(HashMap<String, PrefixCounter2> prefixes, long quarantineCheckTime, Map<String, Object> param) {
+    public QuarantineController(HashMap<String, PrefixCounter> prefixes, long quarantineCheckTime, Map<String, Object> params) {
         this.prefixes = prefixes;
         this.quarantineCheckTime = quarantineCheckTime;
         this.params = params;
@@ -25,21 +25,21 @@ public class QuarantineController2 implements Runnable{
     public synchronized void run() {
         while (running){
             for (final String prefix : prefixes.keySet()) {
-                PrefixCounter2 prefixCounter =prefixes.get(prefix);
+                final PrefixCounter prefixCounter =prefixes.get(prefix);
                 prefixCounter.heartbeat(new StateChangedListener() {
                     @Override
                     public void stateChanged(boolean isQuarantine) {
-                        if (isQuarantine) {
+                        if (!isQuarantine) {
                             System.out.println("Prefix "+ prefix +" quarantine has finished. So let's pull off the trigger!!!");
                             try {
                                 CIDRUtils utils = new CIDRUtils(prefix);
 
 
-                            Trigger.pullTrigger(utils.getNetworkAddress(),utils.getIPv4LocalNetMask().getHostAddress(),"Null0","666",params);
+                            Trigger.pullOffTrigger(utils.getNetworkAddress(), utils.getIPv4LocalNetMask().getHostAddress(), "Null0", "666", params);
                                 // TODO handle exceptions in a better way!!!
-
+                            prefixCounter.setPulled(false);
                             } catch (UnknownHostException e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                e.printStackTrace();
                             } catch (Exception e) {
                                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }
@@ -53,6 +53,8 @@ public class QuarantineController2 implements Runnable{
             }
             try {
                 wait(quarantineCheckTime);
+                System.out.println("Quarantine control is awake! Checking prefixes for expired quarantines");
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;

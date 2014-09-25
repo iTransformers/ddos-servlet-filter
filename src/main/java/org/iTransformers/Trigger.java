@@ -89,10 +89,10 @@ public class Trigger {
     }
 
     params.put("evalScript", null);
-    params.put("command",String.format("ip route %s %s %s tag %s",subnet, subnetMask,gateway,tag));
+   // params.put("command",String.format("ip route %s %s %s tag %s",subnet, subnetMask,gateway,tag));
 
-    Map<String, Object> result = executeScript(cisco_sendConfigCommand.class, binding);
-    params.put("configMode", result.get("configMode"));
+  //  Map<String, Object> result = executeScript(cisco_sendConfigCommand.class, binding);
+  //  params.put("configMode", result.get("configMode"));
     params.put("command",String.format("no ip route %s %s %s", subnet, subnetMask, gateway));
 
     executeScript(cisco_sendConfigCommand.class, binding);
