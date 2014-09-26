@@ -15,6 +15,8 @@ import org.iTransformers.scripts.cisco_sendConfigCommand;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +27,7 @@ import java.util.Map;
  * Time: 1:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Trigger {
-
+public class Trigger implements QuarantineControllerAction {
 
 
     public static void pullTrigger(String subnet, String subnetMask,String gateway, String tag,Map<String, Object> params) throws Exception {
@@ -126,6 +127,43 @@ public class Trigger {
 //        pullOffTrigger("10.200.1.0", "255.255.255.0", "192.0.2.1", "");
 //
 //    }
+
+    @Override
+    public void enterQuarantine(String prefix, Map<String, Object> params) {
+        CIDRUtils utils;
+        try {
+            utils = new CIDRUtils(prefix);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        final String networkAddress = utils.getNetworkAddress();
+        final InetAddress iPv4LocalNetMask =  utils.getIPv4LocalNetMask();
+        final String subnetMask = iPv4LocalNetMask.getHostAddress();
+
+        System.out.println("Pulling the trigger for " + networkAddress + " with mask " + subnetMask);
+        try {
+            Trigger.pullTrigger(networkAddress, subnetMask, "Null0", "666", params);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    @Override
+    public void exitQuarantine(String prefix, Map<String, Object> params) {
+        System.out.println("Prefix "+ prefix +" quarantine has finished. So let's pull off the trigger!!!");
+        try {
+            CIDRUtils utils = new CIDRUtils(prefix);
+            Trigger.pullOffTrigger(utils.getNetworkAddress(), utils.getIPv4LocalNetMask().getHostAddress(), "Null0", "666", params);
+            // TODO handle exceptions in a better way!!!
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+    }
 
 
 }

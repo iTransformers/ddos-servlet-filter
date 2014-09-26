@@ -10,12 +10,14 @@ public class QuarantineController implements Runnable{
     private HashMap<String, PrefixCounter> prefixes;
     private long quarantineCheckTime;
     private Map<String, Object> params;
+    private QuarantineControllerAction action;
     private boolean running = true;
 
-    public QuarantineController(HashMap<String, PrefixCounter> prefixes, long quarantineCheckTime, Map<String, Object> params) {
+    public QuarantineController(HashMap<String, PrefixCounter> prefixes, long quarantineCheckTime, Map<String, Object> params, QuarantineControllerAction action) {
         this.prefixes = prefixes;
         this.quarantineCheckTime = quarantineCheckTime;
         this.params = params;
+        this.action = action;
     }
     public void start(){
         (new Thread(this)).start();
@@ -30,20 +32,11 @@ public class QuarantineController implements Runnable{
                     @Override
                     public void stateChanged(boolean isQuarantine) {
                         if (!isQuarantine) {
-                            System.out.println("Prefix "+ prefix +" quarantine has finished. So let's pull off the trigger!!!");
-                            try {
-                                CIDRUtils utils = new CIDRUtils(prefix);
-
-
-                            Trigger.pullOffTrigger(utils.getNetworkAddress(), utils.getIPv4LocalNetMask().getHostAddress(), "Null0", "666", params);
-                                // TODO handle exceptions in a better way!!!
-                            prefixCounter.setPulled(false);
-                            } catch (UnknownHostException e) {
-                                e.printStackTrace();
-                            } catch (Exception e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            if (action != null) {
+                                action.exitQuarantine(prefix, params);
+                            } else {
+                                System.out.println("Quarantine Controller Action is null skiping it");
                             }
-
                         }   else{
                             System.out.println("Prefix "+prefix+ " is still in quarantine!!!");
 
