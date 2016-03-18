@@ -5,7 +5,7 @@ The time of static applications that just wait to be hit by a massive number of 
 
 This piece of code is an example of a Self-Protective servlet filter able to defend itself against DDOS by utilizing the Remotely Triggered Black Holling technique. 
 
-DDOS servlet filter is able to apply a remotely triggered black holing as per [RFC 5635|https://tools.ietf.org/html/rfc5635]. 
+DDOS servlet filter is able to apply a remotely triggered black holing as per [RFC 5635](https://tools.ietf.org/html/rfc5635). 
 
 
 The servlet filter will track the number of requests comming from certain prefix. 
