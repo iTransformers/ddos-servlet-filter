@@ -23,14 +23,11 @@ package net.itransformers;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 import net.itransformers.expect4groovy.Expect4Groovy;
-import net.itransformers.expect4groovy.Expect4GroovyScriptLauncher;
-import net.itransformers.expect4groovy.cliconnection.CLIConnection;
-import net.itransformers.expect4groovy.cliconnection.impl.EchoCLIConnection;
-import net.itransformers.expect4groovy.cliconnection.impl.RawSocketCLIConnection;
-import net.itransformers.expect4groovy.cliconnection.impl.SshCLIConnection;
-import net.itransformers.expect4groovy.cliconnection.impl.TelnetCLIConnection;
-import net.itransformers.scripts.cisco_login;
-import net.itransformers.scripts.cisco_sendConfigCommand;
+import net.itransformers.expect4java.cliconnection.CLIConnection;
+import net.itransformers.expect4java.cliconnection.impl.EchoCLIConnection;
+import net.itransformers.expect4java.cliconnection.impl.RawSocketCLIConnection;
+import net.itransformers.expect4java.cliconnection.impl.SshCLIConnection;
+import net.itransformers.expect4java.cliconnection.impl.TelnetCLIConnection;
 import net.itransformers.scripts.cisco_login;
 import net.itransformers.scripts.cisco_logout;
 import net.itransformers.scripts.cisco_sendConfigCommand;
@@ -39,7 +36,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

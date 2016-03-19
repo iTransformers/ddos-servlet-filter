@@ -22,18 +22,18 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.itransformers</groupId>
-  <artifactId>DDOSServletFilter</artifactId>
+  <artifactId>ddos-servlet-filter</artifactId>
   <packaging>war</packaging>
   <version>1.0.0</version>
   <name>DDOS Servlet Filter</name>
-  <url>http://itransformers.net/ddos-protection-java</url>
+  <url>http://itransformers.net/ddos-servlet-filter</url>
   <description>DDOS servlet filter is able to apply a remotely triggered black holing as per RFC 5635!</description>
     <organization>
         <name>iTransformers Labs</name>
         <url>http://itransformers.net</url>
     </organization>
     <issueManagement>
-        <url>https://github.com/iTransformers/DDOSServletFIlter/issues</url>
+        <url>https://github.com/iTransformers/ddos-servlet-filter/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
     <developers>
@@ -73,7 +73,7 @@
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/iTransformers/DDOSServletFIlter</url>
+        <url>https://github.com/iTransformers/ddos-servlet-filter.git</url>
     </scm>
 
     <dependencies>
@@ -85,14 +85,14 @@
           <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>iTransformers</groupId>
+         <groupId>net.itransformers</groupId>
           <artifactId>expect4groovy</artifactId>
-          <version>1.1-SNAPSHOT</version>
+          <version>1.0.0</version>
       </dependency>
       <dependency>
-          <groupId>org.codehaus.groovy</groupId>
-          <artifactId>groovy-all</artifactId>
-          <version>2.1.8</version>
+            <groupId>net.itransformers</groupId>
+            <artifactId>expect4java</artifactId>
+            <version>1.0.0</version>
       </dependency>
       <dependency>
           <groupId>junit</groupId>
@@ -102,7 +102,7 @@
       </dependency>
   </dependencies>
   <build>
-    <finalName>ServLetDDOSExample</finalName>
+    <finalName>ddos-servlet-filter</finalName>
     <plugins>
         <plugin>
             <groupId>org.apache.tomcat.maven</groupId>
@@ -111,19 +111,10 @@
             <configuration>
                 <url>http://localhost:8080/manager/text</url>
                 <server>deploymentRepo</server>
-                <path>/ServLetDDOSExample</path>
+                <path>/ddos-servlet-filter</path>
             </configuration>
         </plugin>
-        <plugin>
-            <groupId>org.apache.tomcat.maven</groupId>
-            <artifactId>tomcat7-maven-plugin</artifactId>
-            <version>2.2</version>
-            <configuration>
-                <url>http://10.18.1.151:8080/manager/text</url>
-                <server>productionRepo</server>
-                <path>/ServLetDDOSExample</path>
-            </configuration>
-        </plugin>
+
         <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
             <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
@@ -151,6 +142,21 @@
                     <!-- <version>1.7.10-06</version> -->
                 </dependency>
             </dependencies>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+                <execution>
+                    <id>sign-artifacts</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                </execution>
+            </executions>
+
         </plugin>
         <plugin>
             <groupId>org.sonatype.plugins</groupId>
