@@ -23,6 +23,19 @@ There is also a quarantineController initialized in the init method of the servl
 
 Note that in order that servlet filter to be useful for you you will have to have access to the infrastructure of your provider. This simply an example on how enterprise java applications could benefit from RTBH. 
 
+Current build status
+=================
+
+[ ![Codeship Status for iTransformers/ddos-servlet-filter](https://codeship.com/projects/93854090-d1cd-0133-c1ed-12190d9b9784/status?branch=master)](https://codeship.com/projects/141648)
+
+
+Questions?
+=================
+
+
 ![Community forum](http://forum.itransformers.net/fluxbb/viewforum.php?id=25) 
 
+
+Issues?
+=================
 ![Issue tracker](https://github.com/iTransformers/ddos-servlet-filter/issues)
