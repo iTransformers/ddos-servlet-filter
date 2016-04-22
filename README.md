@@ -21,7 +21,7 @@ Eventually the trigger route will be redistributed in the network and the attack
 
 There is also a quarantineController initialized in the init method of the servlet filter that check for prefixes with expired quarantine period. For those the trigger route will be deleted. 
 
-Note that in order that servlet filter to be useful for you you will have to have access to the infrastructure of your provider. This simply an example on how enterprise java applications could benefit from RTBH. 
+Note that in order that servlet filter to be useful for you you will have to have access to the infrastructure of your provider. It is a simple example on how enterprise java applications could benefit from RTBH and how powerful the integration between application and environment could be.
 
 Current build status
 =================
